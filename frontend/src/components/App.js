@@ -1,14 +1,15 @@
 import {useEffect, useState} from "react"
 import {providers} from "ethers"
-import {castVote, getDeployedContract, getElectionResults, hasAlreadyVoted} from "./contractUtils"
+import {castVote, getDeployedContract, getElectionResults, hasAlreadyVoted} from "../contractUtils"
 import {useEthers} from "@usedapp/core"
 import {CircularProgress} from "@mui/material";
+import {Form} from "./Form";
+import {Table} from "./Table";
 
 function App() {
     const [contract, setContract] = useState(null)
     const [candidates, setCandidates] = useState([])
     const [alreadyVoted, setAlreadyVoted] = useState(false)
-    const [selectedCandidate, setSelectedCandidate] = useState(0)
     const [loading, setLoading] = useState(true)
 
     const {account, activateBrowserWallet, deactivate, chainId} = useEthers()
@@ -36,7 +37,6 @@ function App() {
                 setContract(contract)
                 const candidates = await getElectionResults(contract)
                 setCandidates(candidates)
-                setSelectedCandidate(candidates[0].id)
                 setLoading(false)
 
                 const provider = new providers.Web3Provider(window.ethereum, "any")
@@ -60,12 +60,8 @@ function App() {
         hasAlreadyVoted(contract, account).then(voted => setAlreadyVoted(voted))
     }, [account, contract])
 
-    const handleDropdownSelection = (e) => {
-        setSelectedCandidate(e.target.value)
-    }
 
-    const vote = async (e) => {
-        e.preventDefault()
+    const vote = async (selectedCandidate) => {
         setLoading(true)
         try {
             await castVote(contract, selectedCandidate)
@@ -99,52 +95,9 @@ function App() {
                         {
                             isConnected
                                 ? <div>
-                                    <table className="table">
-                                        <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Votes</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {
-                                            candidates.map(candidate =>
-                                                <tr key={candidate.id}>
-                                                    <th>{candidate.id}</th>
-                                                    <td>{candidate.name}</td>
-                                                    <td>{candidate.voteCount}</td>
-                                                </tr>
-                                            )
-                                        }
-                                        </tbody>
-                                    </table>
+                                    <Table candidates={candidates}/>
                                     {
-                                        alreadyVoted ? "" :
-                                            <form onSubmit={vote}>
-                                                <br/>
-                                                <div className="form-group">
-                                                    <label><b>Select Candidate</b></label>
-                                                    <select
-                                                        className="form-control mt-1"
-                                                        value={selectedCandidate}
-                                                        onChange={handleDropdownSelection}
-                                                    >
-                                                        {
-                                                            candidates.map(candidate =>
-                                                                <option
-                                                                    value={candidate.id}
-                                                                    key={candidate.id}
-                                                                >
-                                                                    {candidate.name}
-                                                                </option>
-                                                            )
-                                                        }
-                                                    </select>
-                                                </div>
-                                                <button type="submit" className="btn btn-primary mt-2">Vote</button>
-                                                <hr/>
-                                            </form>
+                                        alreadyVoted ? "" : <Form candidates={candidates} vote={vote}/>
                                     }
                                     <p className="text-center">Your account: {account}</p>
                                 </div>

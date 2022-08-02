@@ -26,4 +26,4 @@ def update_front_end():
 
 
 def main():
-    deploy_contract()
+    deploy_contract(update_frontend=True)
