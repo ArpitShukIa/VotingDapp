@@ -1,0 +1,49 @@
+{
+  "contracts": {
+    "Election": "3ad2be6bd37743eba7ed3dc86f9db6a6fe017614"
+  },
+  "tests": {
+    "tests/test_election_contract.py": {
+      "coverage": false,
+      "isolated": false,
+      "results": "....",
+      "sha1": "d464fcf3f37ab54a76925d8924f69a7188301318",
+      "txhash": [
+        "7b83c28c7bda7a140b63528994e9cec0c3298958",
+        "bed0b735023fc38b6403e808b553c46482725a1c"
+      ]
+    }
+  },
+  "tx": {
+    "7b83c28c7bda7a140b63528994e9cec0c3298958": {
+      "Election": {
+        "0": [
+          [
+            0,
+            1
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            5
+          ]
+        ]
+      }
+    },
+    "bed0b735023fc38b6403e808b553c46482725a1c": {
+      "Election": {
+        "0": [
+          [
+            0
+          ],
+          [
+            5
+          ],
+          []
+        ]
+      }
+    }
+  }
+}
